@@ -1,0 +1,16 @@
+.ant-btn-primary, .ant-btn-primary:hover {
+    background-color: #ce7a23;
+}
+
+.add-flex-view{
+    display: flex;
+}
+
+.ant-card-type-inner .ant-card-head {
+    background: rgb(190, 113, 5);
+}
+
+
+.right-left{
+    justify-content: space-between;
+}

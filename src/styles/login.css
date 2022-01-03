@@ -1,0 +1,19 @@
+.login-form{
+    width: 40%;
+}
+.login-input {
+    margin-bottom: 25px;
+}
+.text-centered{
+    margin-bottom: 50px;
+    margin-top: 5%;
+    text-align: center;
+}
+
+.centered{
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

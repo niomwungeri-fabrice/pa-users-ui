@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment } from "react";
+import { BrowserRouter, Route, Switch, Routes } from "react-router-dom";
+import { Login } from './components/Login';
+import { NotFound } from "./presentational/NotFound";
+import { Settings } from './components/Settings';
+import { SignUp } from './components/SignUp';
 
-function App() {
+import "./styles/app.css";
+import "./styles/login.css";
+import 'antd/dist/antd.css';
+
+export const App = () => {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Fragment>
+        <div>
+          <Routes>
+            <Route path="/" exact element={<Login />} />
+            <Route path="/signup" exact element={<SignUp />} />
+            <Route path="/settings" exact element={<Settings />} />
+            <Route exact element={<NotFound />} />
+          </Routes>
+        </div>
+      </Fragment>
+    </BrowserRouter>
   );
 }
 
-export default App;
