@@ -1,14 +1,32 @@
 import { Input, Button, Form, Avatar } from "antd";
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
+import { login, useAuthState } from "../stores/AuthStore";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/login.css";
 import "../styles/app.css";
+import { useState } from '@hookstate/core';
+
 
 export const Login = () => {
-    const [email, setEmail]  = useState("");
-    const [password, setPassword]  = useState("");
-    const [isLoading, setIsLoading]  = useState(false);
 
+    const authState = useAuthState();
+    const email = useState("");
+    const password = useState("");
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        if (authState.isLoggedIn.value) {
+            navigate("/");
+        }
+        // eslint-disable-next-line
+    }, [authState.isLoggedIn.value]);
+
+    const handleLogin = () => login(email.get(), password.get());
+    // you can do redirect here base on result from login function
+    // instead of using useEffect()
 
     return (
         <div
@@ -31,9 +49,9 @@ export const Login = () => {
                     className="login-input"
                     size="large"
                     placeholder="Email"
-                    name="email"
-                    value={email}
-                    // onChange={this.handleInput}
+                    value={email.get()}
+                    onChange={(e) => email.set(e.target.value)}
+                // onChange={this.handleInput}
                 />
                 <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
@@ -41,21 +59,23 @@ export const Login = () => {
                     size="large"
                     placeholder="Password"
                     name="password"
-                    value={password}
-                    // onChange={this.handleInput}
-                    // onKeyDown={this._handleKeyDown}
+                    value={password.get()}
+                    onChange={(e) => password.set(e.target.value)}
                     rules={[{ required: true, message: "Please input your password!" }]}
                 />
+
                 <Button
                     // onClick={this.handleSignInOnSubmit}
                     size="large"
                     type="primary"
                     block
-                    loading={isLoading}
-                >
+                    loading={authState.isLoading.get()}
+                    onClick={handleLogin}
+            >
                     <LoginOutlined />
                     Login
                 </Button>
+                <div> {authState.message.get()}</div>
             </Form>
         </div>
     )

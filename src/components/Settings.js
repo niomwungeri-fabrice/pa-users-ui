@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { logout, useAuthState } from "../stores/AuthStore";
 import { Input, Button, Form, Avatar, Select, Table, Tag, Space, Tabs } from "antd";
 import { PieChart } from 'react-minimal-pie-chart';
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
@@ -83,6 +84,8 @@ export const Settings = () => {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
+    const authState = useAuthState();
+
     return <div className="component-container">
         <Tabs defaultActiveKey="1" >
             <TabPane tab="Profile" key="1">
@@ -126,7 +129,7 @@ export const Settings = () => {
                     loading={isLoading}
                 >
                     <LoginOutlined />
-                    Sign Up
+                   
                 </Button>
             </Form>
         </div>
@@ -138,6 +141,7 @@ export const Settings = () => {
                     </TabPane>
                     <TabPane tab="Data" key="2">
                         <div>
+                        Sign Up  - Hi, {JSON.stringify(authState.me.get().data)}! <br /> Welcome to our homepage
                             <PieChart
                                 data={[
                                     { title: 'FEMALE', value: 30, color: '#E38627' },

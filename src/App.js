@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { BrowserRouter, Route, Switch, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Login } from './components/Login';
 import { NotFound } from "./presentational/NotFound";
 import { Settings } from './components/Settings';
@@ -9,20 +9,20 @@ import "./styles/app.css";
 import "./styles/login.css";
 import 'antd/dist/antd.css';
 
-export const App = () => {
+import { PrivateRoute } from "./routes";
 
+export const App = () => {
   return (
     <BrowserRouter>
-      <Fragment>
-        <div>
-          <Routes>
-            <Route path="/" exact element={<Login />} />
-            <Route path="/signup" exact element={<SignUp />} />
-            <Route path="/settings" exact element={<Settings />} />
-            <Route exact element={<NotFound />} />
-          </Routes>
-        </div>
-      </Fragment>
+      <Routes>
+        <Route path="/login" exact element={<Login />} />
+        <Route path="/signup" exact element={<SignUp />} />
+        <Route path="/" exact element={
+          <PrivateRoute>
+            <Settings />
+          </PrivateRoute>} />
+        <Route exact element={<NotFound />} />
+      </Routes>
     </BrowserRouter>
   );
 }
