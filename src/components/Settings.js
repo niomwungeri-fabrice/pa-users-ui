@@ -1,18 +1,23 @@
-import React, { useState } from "react";
-import { logout, useAuthState } from "../stores/AuthStore";
-import { Input, Button, Form, Avatar, Select, Table, Tag, Space, Tabs } from "antd";
-import { PieChart } from 'react-minimal-pie-chart';
-import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
+import "../styles/app.css";
+import "../styles/login.css";
+import React, { useEffect, useState } from "react";
+import { Input, Button, Form, Select, Table, Tabs } from "antd";
+import { UserOutlined, LoginOutlined } from "@ant-design/icons";
+import { api } from "../api/_DATA";
+import { useAuthState } from "../stores/AuthStore";
+import { createUUID } from "../helpers";
+import ReactApexChart from "react-apexcharts";
+
 const { TabPane } = Tabs;
 
 const { Option } = Select;
 
+
 const columns = [
     {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: text => <a>{text}</a>,
+        title: 'Names',
+        dataIndex: 'names',
+        key: 'names',
     },
     {
         title: 'Age',
@@ -20,139 +25,213 @@ const columns = [
         key: 'age',
     },
     {
-        title: 'Address',
-        dataIndex: 'address',
-        key: 'address',
+        title: 'Gender',
+        dataIndex: 'gender',
+        key: 'gender',
     },
     {
-        title: 'Tags',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: tags => (
-            <>
-                {tags.map(tag => {
-                    let color = tag.length > 5 ? 'geekblue' : 'green';
-                    if (tag === 'loser') {
-                        color = 'volcano';
-                    }
-                    return (
-                        <Tag color={color} key={tag}>
-                            {tag.toUpperCase()}
-                        </Tag>
-                    );
-                })}
-            </>
-        ),
+        title: 'Phone Number',
+        dataIndex: 'phoneNumber',
+        key: 'phoneNumber',
     },
     {
-        title: 'Action',
-        key: 'action',
-        render: (text, record) => (
-            <Space size="middle">
-                <a>Invite {record.name}</a>
-                <a>Delete</a>
-            </Space>
-        ),
+        title: 'Email',
+        dataIndex: 'email',
+        key: 'email',
     },
+    {
+        title: 'Is Admin',
+        dataIndex: 'admin',
+        key: 'admin',
+    }
 ];
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-    },
-];
+
 export const Settings = () => {
-    const [names, setNames] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isUserDataLoading, setIsUserDataLoading] = useState(false);
+    const [users, setUsers] = useState([]);
+    const [loggedInUser, setLoggedInUser] = useState({})
 
     const authState = useAuthState();
+    const [pieData, setPieData] = useState({});
 
-    return <div className="component-container">
+
+    useEffect(() => {
+        getAllUsers(authState.me.get().data);
+        setLoggedInUser(authState.me.get().user);
+        getDataByGender(authState.me.get().data);
+    }, []);
+
+
+
+    const getAllUsers = async (token) => {
+        setIsUserDataLoading(true);
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+        try {
+            const { data } = await api.get("/users", config);
+            setUsers(data.data);
+            setIsUserDataLoading(false);
+        } catch (error) {
+            // handle errors
+        } finally {
+            setIsUserDataLoading(false);
+        }
+    };
+
+
+    const getDataByGender = async (token) => {
+        setIsLoading(true);
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };
+        try {
+            const { data } = await api.get("/count/gender", config);
+            // console.log(data.map(d=>console.log(d.title, "=======")));
+            console.log(data.data);
+            setPieData(
+                {
+                    series: data.data.map(a => a.value),
+                    options: {
+                        chart: {
+                            width: 380,
+                            type: 'pie',
+                        },
+                        labels: data.data.map(a => a.title),
+                        responsive: [{
+                            breakpoint: 480,
+                            options: {
+                                chart: {
+                                    width: 200
+                                },
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }]
+                    },
+                }
+    
+            );
+            // setGenderStatics(data.data);
+            setIsLoading(false);
+        } catch (error) {
+            // handle errors
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleUpdate = async () => {
+        const userId = loggedInUser['userId'];
+
+        // remove unnecessary fields for updating a records
+        delete loggedInUser['systemId'];
+        delete loggedInUser['updatedAt'];
+        delete loggedInUser['createdAt'];
+        delete loggedInUser['userId'];
+
+        try {
+            console.log(loggedInUser);
+            const { data } = await api.put(`/complete/${userId}/form`, loggedInUser);
+            console.log(data);
+        } catch (error) {
+            console.log(error.response.data)
+        }
+    }
+
+    const handleInput = ({ target: { value, name } }) => {
+        setLoggedInUser({ ...loggedInUser, [name]: value });
+    }
+
+    const handleSelectChange = (value) => {
+        setLoggedInUser({ ...loggedInUser, gender: value });
+    }
+
+    return <div className="site-margin">
         <Tabs defaultActiveKey="1" >
             <TabPane tab="Profile" key="1">
-            <div
-            className="component-container centered"
-        >
-            <Form className="login-form">
-                <div className="add-flex-view right-left">
-                    <Input
-                        prefix={<UserOutlined className="site-form-item-icon" />}
-                        className="login-input"
-                        size="large"
-                        placeholder="Names"
-                        name="email"
-                        value={names}
-                    // onChange={this.handleInput}
-                    />
-                    <Select size="large" className="component-width" defaultValue="FEMALE" 
-                    // onChange={handleChange}
-                    >
-                        <Option value="FEMALE">FEMALE</Option>
-                        <Option value="MALE">MALE</Option>
-                        <Option value="OTHER">OTHER</Option>
-                    </Select>
-                </div>
-
-                <Input
-                    prefix={<UserOutlined className="site-form-item-icon" />}
-                    className="login-input"
-                    size="large"
-                    placeholder="Email"
-                    name="email"
-                    value={email}
-                // onChange={this.handleInput}
-                />
-                <Button
-                    // onClick={this.handleSignInOnSubmit}
-                    size="large"
-                    type="primary"
-                    block
-                    loading={isLoading}
+                <div
+                    className="component-container centered"
                 >
-                    <LoginOutlined />
-                   
-                </Button>
-            </Form>
-        </div>
-            </TabPane>
-            <TabPane tab="Administration" key="2">
-                <Tabs defaultActiveKey="1" tabPosition="left">
-                    <TabPane tab="Users" key="1">
-                        <Table columns={columns} dataSource={data} />
-                    </TabPane>
-                    <TabPane tab="Data" key="2">
-                        <div>
-                        Sign Up  - Hi, {JSON.stringify(authState.me.get().data)}! <br /> Welcome to our homepage
-                            <PieChart
-                                data={[
-                                    { title: 'FEMALE', value: 30, color: '#E38627' },
-                                    { title: 'MALE', value: 50, color: '#C13C37' },
-                                    { title: 'OTHER', value: 20, color: '#6A2135' },
-                                ]}
-                            />;
+                    <Form className="login-form">
+                        <div className="add-flex-view right-left">
+                            <Input
+                                prefix={<UserOutlined className="site-form-item-icon" />}
+                                className="login-input"
+                                size="large"
+                                placeholder="Names"
+                                name="names"
+                                value={loggedInUser.names}
+                                onChange={handleInput}
+                            />
+                            <Select size="large" className="component-width" defaultValue={loggedInUser.gender}
+                                onChange={handleSelectChange}
+                            >
+                                <Option value="FEMALE">FEMALE</Option>
+                                <Option value="MALE">MALE</Option>
+                                <Option value="OTHER">OTHER</Option>
+                            </Select>
                         </div>
-                    </TabPane>
-                </Tabs>
+
+                        <div className="add-flex-view right-left">
+                            <Input
+                                prefix={<UserOutlined className="site-form-item-icon" />}
+                                className="login-input"
+                                size="large"
+                                placeholder="Age"
+                                name="age"
+                                value={loggedInUser.age}
+                                onChange={handleInput}
+                            />
+                            <Input
+                                prefix={<UserOutlined className="site-form-item-icon" />}
+                                className="login-input"
+                                size="large"
+                                placeholder="Phone Number"
+                                name="phoneNumber"
+                                value={loggedInUser.phoneNumber}
+                                onChange={handleInput}
+                            />
+                        </div>
+                        <Input
+                            prefix={<UserOutlined className="site-form-item-icon" />}
+                            className="login-input"
+                            size="large"
+                            placeholder="Email"
+                            name="email"
+                            value={loggedInUser.email}
+                            onChange={handleInput}
+                        />
+                        <Button
+                            onClick={handleUpdate}
+                            size="large"
+                            type="primary"
+                            block
+                            loading={isLoading}
+                        >
+                            <LoginOutlined />
+                            Update my profile
+                        </Button>
+                    </Form>
+                </div>
             </TabPane>
+            {!loggedInUser.admin &&
+                <TabPane tab="Administration" key="2">
+                    <Tabs defaultActiveKey="1" tabPosition="left">
+                        <TabPane tab="Users" key="1">
+                            {isUserDataLoading
+                                ? <div>loading...</div>
+                                : <Table rowKey={createUUID} columns={columns} dataSource={users} />}
+                        </TabPane>
+                        <TabPane tab="Data" key="2">
+                            <div>
+                                <h3>Count By Gender</h3>
+                                <ReactApexChart options={pieData.options} series={pieData.series} type="pie" width={380} />
+                            </div>
+                        </TabPane>
+                    </Tabs>
+                </TabPane>
+            }
         </Tabs>
     </div>
 }

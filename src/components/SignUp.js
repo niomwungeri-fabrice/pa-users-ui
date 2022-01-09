@@ -1,22 +1,31 @@
-import { Input, Button, Form, Avatar, Menu, Dropdown, Select } from "antd";
-import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
-import React, { useState } from "react";
-import "../styles/login.css";
 import "../styles/app.css";
+import "../styles/login.css";
 import '../styles/shared.css';
+import { Input, Button, Form, Alert } from "antd";
+import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
+import { useState } from '@hookstate/core';
+import { signUp, useAuthState } from "../stores/AuthStore";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-
-const { Option } = Select;
 
 export const SignUp = () => {
-    const [names, setNames] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
+    const names = useState("");
+    const email = useState("");
+    const password = useState("");
+    const confirmPassword = useState("");
 
-    function handleChange(value) {
-        console.log(`selected ${value}`);
-    }
+    const authState = useAuthState();
+
+    const navigate = useNavigate();
+
+    const handleSignUp = () => signUp(email.get(), password.get(), confirmPassword.get(), names.get());
+
+    useEffect(() => {
+        if (authState.isLoggedIn.value) {
+            navigate("/login");
+        }
+    }, [authState.isLoggedIn.value]);
 
     return (
         <div
@@ -27,29 +36,24 @@ export const SignUp = () => {
                     textAlign: "center"
                 }}>
                     <h2>P.A. User Management System</h2>
-                    <Avatar
-                        src={""}
-                        shape="square"
-                        size={70}
-                        icon={<UserOutlined />}
-                    />
                 </div>
-                <div className="add-flex-view right-left">
-                    <Input
-                        prefix={<UserOutlined className="site-form-item-icon" />}
-                        className="login-input"
-                        size="large"
-                        placeholder="Names"
-                        name="email"
-                        value={names}
-                    // onChange={this.handleInput}
-                    />
-                    <Select size="large" className="component-width" defaultValue="FEMALE" onChange={handleChange}>
+
+                {authState.message.get() && <Alert style={{ marginBottom: '10px' }} message={authState.message.get()} type="error" showIcon />}
+                <Input
+                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    className="login-input"
+                    size="large"
+                    placeholder="Names"
+                    name="email"
+                    value={names.get()}
+                    onChange={(e) => names.set(e.target.value)}
+                />
+                {/* <Select size="large" className="component-width" defaultValue="FEMALE" onChange={handleChange}>
                         <Option value="FEMALE">FEMALE</Option>
                         <Option value="MALE">MALE</Option>
                         <Option value="OTHER">OTHER</Option>
-                    </Select>
-                </div>
+                    </Select> */}
+                {/* </div> */}
 
                 <Input
                     prefix={<UserOutlined className="site-form-item-icon" />}
@@ -57,8 +61,8 @@ export const SignUp = () => {
                     size="large"
                     placeholder="Email"
                     name="email"
-                    value={email}
-                // onChange={this.handleInput}
+                    value={email.get()}
+                    onChange={(e) => email.set(e.target.value)}
                 />
                 <div className="add-flex-view right-left">
                     <Input.Password
@@ -67,9 +71,8 @@ export const SignUp = () => {
                         size="large"
                         placeholder="Password"
                         name="password"
-                        value={password}
-                        // onChange={this.handleInput}
-                        // onKeyDown={this._handleKeyDown}
+                        value={password.get()}
+                        onChange={(e) => password.set(e.target.value)}
                         rules={[{ required: true, message: "Please input your password!" }]}
                     />
                     <Input.Password
@@ -77,23 +80,24 @@ export const SignUp = () => {
                         className="login-input space"
                         size="large"
                         placeholder="Confirm Password"
-                        name="password"
-                        value={password}
-                        // onChange={this.handleInput}
-                        // onKeyDown={this._handleKeyDown}
+                        name="confirmPassword"
+                        value={confirmPassword.get()}
+                        onChange={(e) => confirmPassword.set(e.target.value)}
                         rules={[{ required: true, message: "Please input your password!" }]}
                     />
                 </div>
                 <Button
-                    // onClick={this.handleSignInOnSubmit}
+
                     size="large"
                     type="primary"
                     block
-                    loading={isLoading}
+                    loading={authState.isLoading.get()}
+                    onClick={handleSignUp}
                 >
                     <LoginOutlined />
                     Sign Up
                 </Button>
+                <div>{authState.message.get()}</div>
             </Form>
         </div>
     )

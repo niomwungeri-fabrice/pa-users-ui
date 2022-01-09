@@ -1,10 +1,10 @@
-import { Input, Button, Form, Avatar } from "antd";
+import "../styles/app.css";
+import "../styles/login.css";
+import React, { useEffect } from "react";
+import { Input, Button, Form, Alert } from "antd";
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
 import { login, useAuthState } from "../stores/AuthStore";
-import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/login.css";
-import "../styles/app.css";
 import { useState } from '@hookstate/core';
 
 
@@ -17,16 +17,12 @@ export const Login = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-
         if (authState.isLoggedIn.value) {
             navigate("/");
         }
-        // eslint-disable-next-line
     }, [authState.isLoggedIn.value]);
 
     const handleLogin = () => login(email.get(), password.get());
-    // you can do redirect here base on result from login function
-    // instead of using useEffect()
 
     return (
         <div
@@ -37,13 +33,8 @@ export const Login = () => {
                     textAlign: "center"
                 }}>
                     <h2>P.A. User Management System</h2>
-                    <Avatar
-                        src={""}
-                        shape="square"
-                        size={70}
-                        icon={<UserOutlined />}
-                    />
                 </div>
+                {authState.message.get() && <Alert style={{ marginBottom: '10px' }} message={authState.message.get()} type="error" showIcon />}
                 <Input
                     prefix={<UserOutlined className="site-form-item-icon" />}
                     className="login-input"
@@ -51,7 +42,6 @@ export const Login = () => {
                     placeholder="Email"
                     value={email.get()}
                     onChange={(e) => email.set(e.target.value)}
-                // onChange={this.handleInput}
                 />
                 <Input.Password
                     prefix={<LockOutlined className="site-form-item-icon" />}
@@ -65,17 +55,16 @@ export const Login = () => {
                 />
 
                 <Button
-                    // onClick={this.handleSignInOnSubmit}
                     size="large"
                     type="primary"
                     block
                     loading={authState.isLoading.get()}
                     onClick={handleLogin}
-            >
+                >
                     <LoginOutlined />
                     Login
                 </Button>
-                <div> {authState.message.get()}</div>
+                <div>{authState.message.get()}</div>
             </Form>
         </div>
     )
