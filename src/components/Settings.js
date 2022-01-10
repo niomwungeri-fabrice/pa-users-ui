@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 import { Input, Button, Form, Select, Table, Tabs, Alert } from "antd";
 import { UserOutlined, LoginOutlined } from "@ant-design/icons";
 import { api } from "../api/_DATA";
-import { useAuthState } from "../stores/AuthStore";
+import { useAuthState, logout } from "../stores/AuthStore";
 import { createUUID } from "../helpers";
 import ReactApexChart from "react-apexcharts";
+import { useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -58,6 +59,8 @@ export const Settings = () => {
 
     const authState = useAuthState();
     const [pieData, setPieData] = useState({});
+
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -138,7 +141,6 @@ export const Settings = () => {
                 }
             };
             const { data } = await api.post(`/complete/${userId}/form`, { ...loggedInUser }, config);
-            console.log(data.message);
             setUpdateSuccess(data.message);
             setIsUpdating(false);
         } catch (error) {
@@ -156,7 +158,25 @@ export const Settings = () => {
         setLoggedInUser({ ...loggedInUser, gender: value });
     }
 
+    const handleLogout = () => {
+        navigate(`/login`);
+        logout();
+    }
+
+
     return <div className="site-margin">
+        <div style={{ 'display': 'flex', 'justifyContent': 'space-between' }}>
+            <span></span>
+            <Button style={{marginTop: '15px'}}
+                onClick={handleLogout}
+                size="large"
+                type="primary"
+                loading={isUpdating}
+            >
+                <LoginOutlined />
+                Log Out
+            </Button>
+        </div>
         <Tabs defaultActiveKey="1" >
             <TabPane tab="Profile" key="1">
                 <div className="component-container centered">
