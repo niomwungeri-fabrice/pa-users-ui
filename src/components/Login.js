@@ -51,7 +51,6 @@ export const Login = () => {
                     name="password"
                     value={password.get()}
                     onChange={(e) => password.set(e.target.value)}
-                    rules={[{ required: true, message: "Please input your password!" }]}
                 />
 
                 <Button

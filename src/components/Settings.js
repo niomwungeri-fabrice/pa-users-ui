@@ -1,7 +1,7 @@
 import "../styles/app.css";
 import "../styles/login.css";
 import React, { useEffect, useState } from "react";
-import { Input, Button, Form, Select, Table, Tabs } from "antd";
+import { Input, Button, Form, Select, Table, Tabs, Alert } from "antd";
 import { UserOutlined, LoginOutlined } from "@ant-design/icons";
 import { api } from "../api/_DATA";
 import { useAuthState } from "../stores/AuthStore";
@@ -49,8 +49,12 @@ const columns = [
 export const Settings = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isUserDataLoading, setIsUserDataLoading] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
     const [users, setUsers] = useState([]);
-    const [loggedInUser, setLoggedInUser] = useState({})
+    const [loggedInUser, setLoggedInUser] = useState({});
+
+    const [updateSuccess, setUpdateSuccess] = useState("");
+    const [updateError, setUpdateError] = useState("");
 
     const authState = useAuthState();
     const [pieData, setPieData] = useState({});
@@ -60,7 +64,7 @@ export const Settings = () => {
         getAllUsers(authState.me.get().data);
         setLoggedInUser(authState.me.get().user);
         getDataByGender(authState.me.get().data);
-    }, []);
+    }, [isUpdating]);
 
 
 
@@ -86,8 +90,6 @@ export const Settings = () => {
         };
         try {
             const { data } = await api.get("/count/gender", config);
-            // console.log(data.map(d=>console.log(d.title, "=======")));
-            console.log(data.data);
             setPieData(
                 {
                     series: data.data.map(a => a.value),
@@ -110,9 +112,8 @@ export const Settings = () => {
                         }]
                     },
                 }
-    
+
             );
-            // setGenderStatics(data.data);
             setIsLoading(false);
         } catch (error) {
             // handle errors
@@ -129,13 +130,21 @@ export const Settings = () => {
         delete loggedInUser['updatedAt'];
         delete loggedInUser['createdAt'];
         delete loggedInUser['userId'];
-
+        setIsUpdating(true);
         try {
-            console.log(loggedInUser);
-            const { data } = await api.put(`/complete/${userId}/form`, loggedInUser);
-            console.log(data);
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${authState.me.get().data}`
+                }
+            };
+            const { data } = await api.post(`/complete/${userId}/form`, { ...loggedInUser }, config);
+            console.log(data.message);
+            setUpdateSuccess(data.message);
+            setIsUpdating(false);
         } catch (error) {
-            console.log(error.response.data)
+            setUpdateError(error.response.data.error)
+        } finally {
+            setIsUpdating(false);
         }
     }
 
@@ -150,10 +159,10 @@ export const Settings = () => {
     return <div className="site-margin">
         <Tabs defaultActiveKey="1" >
             <TabPane tab="Profile" key="1">
-                <div
-                    className="component-container centered"
-                >
+                <div className="component-container centered">
                     <Form className="login-form">
+                        {updateSuccess && <Alert style={{ marginBottom: '10px' }} message={updateSuccess} type="success" closeText="Close Now" showIcon />}
+                        {updateError && <Alert style={{ marginBottom: '10px' }} message={updateError} type="error" closeText="Close Now" showIcon />}
                         <div className="add-flex-view right-left">
                             <Input
                                 prefix={<UserOutlined className="site-form-item-icon" />}
@@ -207,7 +216,7 @@ export const Settings = () => {
                             size="large"
                             type="primary"
                             block
-                            loading={isLoading}
+                            loading={isUpdating}
                         >
                             <LoginOutlined />
                             Update my profile
