@@ -5,6 +5,8 @@ This is simple application that will users to sign up and login users, with the 
 
 Deployed On Heroku [Pivot Access User Management System](https://pivot-access-users-ui.herokuapp.com/)
 
+Deployed On Netlify [Pivot Access User Management System](https://61dc78a5b183340b9aff083e--agitated-goodall-4fa5f6.netlify.app/login)
+
 ## Access Application locally
 
     ## Before Getting Started Install
