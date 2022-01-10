@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/pa-users-ui/static/css/main.cf6b162b.css",
+    "main.js": "/pa-users-ui/static/js/main.dd92f068.js",
+    "index.html": "/pa-users-ui/index.html",
+    "main.cf6b162b.css.map": "/pa-users-ui/static/css/main.cf6b162b.css.map",
+    "main.dd92f068.js.map": "/pa-users-ui/static/js/main.dd92f068.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.cf6b162b.css",
+    "static/js/main.dd92f068.js"
+  ]
+}
