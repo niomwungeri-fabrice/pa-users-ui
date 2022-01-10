@@ -1,15 +1,31 @@
-# Getting Started with Pivot Access User Management System
+# Pivot Access User Management System
+This is simple application that will users to sign up and login users, with the ability to fill a form [names, tel, email, gender, age, etc.] and an administrator being able to view the individual entries and some aggregated data on the entries [pie chart of the participants by gender, etc.].
 
-This is simple application that will users to sign up and login users, with the ability to fill a form [names, tel, email,
-gender, age, etc.] and an administrator being able to view the individual entries and some
-aggregated data on the entries [pie chart of the participants by gender, etc.].
+## Access application online
 
-## You can access the app online via this [link](https://pivot-access-users-ui.herokuapp.com/)
+Deployed On Heroku [Pivot Access User Management System](https://pivot-access-users-ui.herokuapp.com/)
 
+## Access Application locally
+
+    ## Before Getting Started Install
+
+- `nodejs 8.x.x`
+
+  
+### Test Data - admin:
+    email:admin@gmail.com, password: admin
 ## How to get test the app locally
 - ### Pre-requisite:
-Make sure you local server is running. How to set Up your local [server](https://pivot-access-users.herokuapp.com/)
-- ### `npm start`
+Make sure you local server is running. How to set Up your local [server](https://github.com/niomwungeri-fabrice/pa-users-api)
+- ### Getting started
+
+Note: Make sure redis is running, and you have configured it.
+
+```sh
+$ git clone https://github.com/niomwungeri-fabrice/pa-users-ui
+$ cd pa-users-ui
+$ npm start
+```
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
