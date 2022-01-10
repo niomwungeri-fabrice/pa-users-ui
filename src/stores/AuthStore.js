@@ -5,6 +5,7 @@ const initialState = {
     isLoggedIn: false,
     me: {},
     isLoading: false,
+    hasAccount:false,
     message: '',
     users: []
 };
@@ -35,18 +36,15 @@ export const signUp = async (email, password, confirmPassword, names) => {
             authState.set({ ...initialState, message: "Password confirmation Don't match!", isLoading: false });
             return;
         }
-        const { data } = await api.post("/signup", { email, password, names });
+        const { data } = await api.post("/signup", { email, password, names, gender: 'OTHER' });
         authState.set({
             ...initialState,
             me: { data: data.data, message: data.message },
             isLoading: false,
-            isLoggedIn: true,
+            hasAccount: true,
         });
 
     } catch (error) {
-        // console.log(error.response.data.error);
-        // console.log(error.response.status);
-        // console.log(error.response.headers);
         authState.set({ ...initialState, message: error.response.data.error, isLoading: false })
     }
 

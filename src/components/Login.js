@@ -63,7 +63,7 @@ export const Login = () => {
                     <LoginOutlined />
                     Login
                 </Button>
-                <div>{authState.message.get()}</div>
+                <div>you don't have account? <Button type="link" onClick={()=> navigate('/signup')} >Create an account here</Button> </div>
             </Form>
         </div>
     )

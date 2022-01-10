@@ -22,10 +22,10 @@ export const SignUp = () => {
     const handleSignUp = () => signUp(email.get(), password.get(), confirmPassword.get(), names.get());
 
     useEffect(() => {
-        if (authState.isLoggedIn.value) {
+        if (authState.hasAccount.value) {
             navigate("/login");
         }
-    }, [authState.isLoggedIn.value]);
+    }, [authState.hasAccount.value]);
 
     return (
         <div
@@ -48,12 +48,6 @@ export const SignUp = () => {
                     value={names.get()}
                     onChange={(e) => names.set(e.target.value)}
                 />
-                {/* <Select size="large" className="component-width" defaultValue="FEMALE" onChange={handleChange}>
-                        <Option value="FEMALE">FEMALE</Option>
-                        <Option value="MALE">MALE</Option>
-                        <Option value="OTHER">OTHER</Option>
-                    </Select> */}
-                {/* </div> */}
 
                 <Input
                     prefix={<UserOutlined className="site-form-item-icon" />}
@@ -73,7 +67,6 @@ export const SignUp = () => {
                         name="password"
                         value={password.get()}
                         onChange={(e) => password.set(e.target.value)}
-                        rules={[{ required: true, message: "Please input your password!" }]}
                     />
                     <Input.Password
                         prefix={<LockOutlined className="site-form-item-icon" />}
@@ -83,11 +76,9 @@ export const SignUp = () => {
                         name="confirmPassword"
                         value={confirmPassword.get()}
                         onChange={(e) => confirmPassword.set(e.target.value)}
-                        rules={[{ required: true, message: "Please input your password!" }]}
                     />
                 </div>
                 <Button
-
                     size="large"
                     type="primary"
                     block
@@ -97,7 +88,7 @@ export const SignUp = () => {
                     <LoginOutlined />
                     Sign Up
                 </Button>
-                <div>{authState.message.get()}</div>
+                <div>Do you have an account already?<Button type="link" onClick={()=> navigate('/login')} >Sign in here</Button> </div>
             </Form>
         </div>
     )
