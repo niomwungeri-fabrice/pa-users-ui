@@ -45,7 +45,7 @@ export const signUp = async (email, password, confirmPassword, names) => {
         });
 
     } catch (error) {
-        authState.set({ ...initialState, message: error.response.data.error, isLoading: false })
+        authState.set({ ...initialState, message: error.response.data.message, isLoading: false })
     }
 
 };

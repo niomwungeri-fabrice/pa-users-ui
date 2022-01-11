@@ -3,7 +3,7 @@ import "../styles/login.css";
 import React, { useEffect } from "react";
 import { Input, Button, Form, Alert } from "antd";
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
-import { login, useAuthState } from "../stores/AuthStore";
+import { login, useAuthState, logout } from "../stores/AuthStore";
 import { useNavigate } from "react-router-dom";
 import { useState } from '@hookstate/core';
 
@@ -23,7 +23,10 @@ export const Login = () => {
     }, [authState.isLoggedIn.value]);
 
     const handleLogin = () => login(email.get(), password.get());
-
+    const goToSignUp = () => {
+        navigate(`/signup`);
+        logout();
+    }
     return (
         <div
             className="component-container centered"
@@ -63,7 +66,7 @@ export const Login = () => {
                     <LoginOutlined />
                     Login
                 </Button>
-                <div>you don't have account? <Button type="link" onClick={()=> navigate('/signup')} >Create an account here</Button> </div>
+                <div>you don't have account? <Button type="link" onClick={goToSignUp} >Create an account here</Button> </div>
             </Form>
         </div>
     )

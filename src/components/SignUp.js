@@ -4,7 +4,7 @@ import '../styles/shared.css';
 import { Input, Button, Form, Alert } from "antd";
 import { UserOutlined, LockOutlined, LoginOutlined } from "@ant-design/icons";
 import { useState } from '@hookstate/core';
-import { signUp, useAuthState } from "../stores/AuthStore";
+import { signUp, useAuthState, logout } from "../stores/AuthStore";
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,6 +20,11 @@ export const SignUp = () => {
     const navigate = useNavigate();
 
     const handleSignUp = () => signUp(email.get(), password.get(), confirmPassword.get(), names.get());
+
+    const goToSignIn = () => {
+        navigate(`/login`);
+        logout();
+    }
 
     useEffect(() => {
         if (authState.hasAccount.value) {
@@ -88,7 +93,7 @@ export const SignUp = () => {
                     <LoginOutlined />
                     Sign Up
                 </Button>
-                <div>Do you have an account already?<Button type="link" onClick={()=> navigate('/login')} >Sign in here</Button> </div>
+                <div>Do you have an account already?<Button type="link" onClick={goToSignIn} >Sign in here</Button> </div>
             </Form>
         </div>
     )

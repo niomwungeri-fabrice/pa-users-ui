@@ -3,9 +3,8 @@ This is simple application that will users to sign up and login users, with the 
 
 ## Access application online
 
-Deployed On Heroku [Pivot Access User Management System](https://pivot-access-users-ui.herokuapp.com/)
-
-Deployed On Netlify [Pivot Access User Management System](https://61dc78a5b183340b9aff083e--agitated-goodall-4fa5f6.netlify.app/login)
+Deployed On Heroku [Pivot Access User Management System](https://pivot-access-users-ui.herokuapp.com/) or,
+Deployed On Netlify [Pivot Access User Management System](https://61dc78a5b183340b9aff083e--agitated-goodall-4fa5f6.netlify.app)
 
 ## Access Application locally
 
@@ -20,8 +19,6 @@ Deployed On Netlify [Pivot Access User Management System](https://61dc78a5b18334
 - ### Pre-requisite:
 Make sure you local server is running. How to set Up your local [server](https://github.com/niomwungeri-fabrice/pa-users-api)
 - ### Getting started
-
-Note: Make sure redis is running, and you have configured it.
 
 ```sh
 $ git clone https://github.com/niomwungeri-fabrice/pa-users-ui
@@ -42,9 +39,9 @@ It correctly bundles React in production mode and optimizes the build for the be
  - Create an account
  - Login
  - Update your profile
- - view administration page if you admin
- - view list of users if you admin
- - view Statics if you admin
+ - view administration page if you are admin
+ - view list of users if you are admin
+ - view Statics if you are admin
 
 ## Built with
 - [ReactJs](https://reactjs.org/) is a free and open-source front-end JavaScript library for building user interfaces based on UI components. 
