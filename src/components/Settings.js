@@ -244,7 +244,7 @@ export const Settings = () => {
                     </Form>
                 </div>
             </TabPane>
-            {!loggedInUser.admin &&
+            {loggedInUser.admin &&
                 <TabPane tab="Administration" key="2">
                     <Tabs defaultActiveKey="1" tabPosition="left">
                         <TabPane tab="Users" key="1">
